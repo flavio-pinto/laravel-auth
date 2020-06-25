@@ -20,8 +20,8 @@
                 <td>{{$post->id}}</td>
                 <td>{{$post->title}}</td>
                 <td>{{$post->body}}</td>
-                <td>{{$post->created_at}}</td>
-                <td>{{$post->updated_at}}</td>
+                <td>{{$post->created_at->format('d/m/Y')}}</td>
+                <td>{{$post->updated_at->diffForHumans()}}</td>
                 <td>
                     <a href="{{route('admin.posts.edit', $post->id)}}" class="btn btn-primary">Edit</a>
                 </td>
