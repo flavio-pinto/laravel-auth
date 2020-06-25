@@ -13,10 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Pagina a cui si accede quando non si è ancora fatto login
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('guest.welcome');
+})->name('home');
 
+//Rotte di autenticazione
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Admin
+Route::prefix('admin')
+    ->namespace('Admin')
+    ->middleware('auth') //il middleware auth controlla se un utente è loggato prima di raggiungere una rotta
+    ->group(function() {
+        Route::get('/home', 'HomeController@index')->name('admin.home');
+    });
+
+
