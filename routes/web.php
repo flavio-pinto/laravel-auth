@@ -21,12 +21,17 @@ Route::get('/', function () {
 //Rotte di autenticazione
 Auth::routes();
 
+//Guest
+Route::get('posts', 'PostController@index')->name('posts.index');
+
 //Admin
-Route::prefix('admin')
+Route::prefix('admin') //questo prefisso lo mette nella url...
+    ->name('admin.') // ...invece questo lo aggiunge ai name delle rotte per evitare conflitti con i posts di guest
     ->namespace('Admin')
     ->middleware('auth') //il middleware auth controlla se un utente è loggato prima di raggiungere una rotta
     ->group(function() {
-        Route::get('/home', 'HomeController@index')->name('admin.home');
+        Route::get('/home', 'HomeController@index')->name('home');
+        Route::resource('posts', 'PostController');
     });
 
 
