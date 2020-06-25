@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+    //ADMIN USERS
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +18,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::where('user_id', Auth::id())->orderby('created_at', 'desc')->paginate(5);
+
+        return view('admin.posts.index', compact('posts'));
     }
 
     /**
