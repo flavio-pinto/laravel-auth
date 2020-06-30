@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form action="{{route('admin.posts.update', $post->id)}}" method="POST">
+    <form action="{{route('admin.posts.update', $post->id)}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
 
@@ -25,6 +25,14 @@
         <div class="form-group">
             <label for="body">Testo</label>
             <textarea class="form-control" name="body" id="body">{{old('body', $post->body)}}</textarea>
+        </div>
+        <div class="form-group">
+            <label class="d-block" for="path_img">Add image</label>
+            @isset($post->path_img) {{-- isset è il contrario di empty --}}
+                <img src="{{asset('storage/' . $post->path_img)}}" alt="{{$post->title}}" width="400">
+                <h6 class="mt-2">Change image:</h6>
+            @endisset
+            <input type="file" name="path_img" id="path_img" accept="image/*">
         </div>
         <input class="btn btn-primary" type="submit" value="Aggiorna post">
     </form>

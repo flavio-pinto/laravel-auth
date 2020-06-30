@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -48,6 +49,11 @@ class PostController extends Controller
 
         $data['user_id'] = Auth::id();
         $data['slug'] = Str::slug($data['title'], '-');
+
+        //set image url
+        if(!empty($data['path_img'])) {
+            $data['path_img'] = Storage::disk('public')->put('images', $data['path_img']); //images è la cartella, mentre il secondo parametro è il nome unico del file, così si crea il link verso la cartella storage
+        }
 
         $newPost = new Post();
         $newPost->fill($data);
@@ -93,6 +99,16 @@ class PostController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($data['title'], '-');
+
+        if(!empty($data['path_img'])) { //questo è il campo della form
+            // cancella immagine precedente
+            if(!empty($post->path_img)) { //controlla l'oggetto
+                Storage::disk('public')->delete($post->path_img);
+            }
+            // salvare nuova immagine
+            $data['path_img'] = Storage::disk('public')->put('images', $data['path_img']);
+        }
+
         $updated = $post->update($data);
 
         if($updated) {
@@ -116,6 +132,9 @@ class PostController extends Controller
         $deleted = $post->delete();
 
         if($deleted) {
+            if(!empty($post->path_img)) { //per eliminare l'immagine dallo storage
+                Storage::disk('public')->delete($post->path_img);
+            }
             return redirect()->route('admin.posts.index')->with('post-deleted', $post->title);
         }
     }
@@ -126,7 +145,8 @@ class PostController extends Controller
     private function validationRules() {
         return [
             'title' => 'required',
-            'body' => 'required'
+            'body' => 'required',
+            'path_img' => 'image' 
         ];
     }
 }

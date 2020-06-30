@@ -36,5 +36,12 @@
             </tr>
         </tbody>
     </table>
+
+    <h3 class="mb-4">Image</h3>
+    @if(!empty($post->path_img))
+        <img src="{{asset('storage/' . $post->path_img)}}" alt="{{$post->title}}" width="400">
+    @else
+        <div class="no-image">Questo post non ha immagini</div>
+    @endif
 </div>
 @endsection
